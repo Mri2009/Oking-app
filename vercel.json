@@ -1,7 +1,7 @@
 {
   "buildCommand": "echo 'Build complete'",
-  "public": true,
-  "env": {
+  "public": true
+}
     "OPENROUTER_KEY": "@openrouter_key"
   }
 }
