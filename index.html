@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OKING - King of All Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            color: #333;
+        }
+        
+        nav {
+            background: white;
+            padding: 20px 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        
+        nav a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #d4af37;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .messages {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fafafa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        
+        .user-message {
+            background: #d4af37;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .ai-message {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            background: #d4af37;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #b8941f;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .mode-selector {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .mode-selector select {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #d4af37;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">♛ OKING</div>
+        <div>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#signup">Sign In</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>♛ OKING</h1>
+            <p>King of All Intelligence</p>
+            <p>Ask any question. Get real answers from real experts.</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="mode-selector">
+                <label for="mode">Select Mode:</label>
+                <select id="mode">
+                    <option value="free">🆓 Free (Llama)</option>
+                    <option value="premium">⭐ Premium (Claude)</option>
+                    <option value="king">♛ King Bundle (Claude Opus)</option>
+                </select>
+            </div>
+
+            <div class="messages" id="messages">
+                <div class="ai-message">
+                    👋 Assalamualaikum! Main OKING hoon. Aap kuch bhi poochh sakte ho aur main aapko sahi jawab dunga!
+                </div>
+            </div>
+
+            <div class="loading" id="loading">⏳ Soch raha hoon...</div>
+
+            <div class="input-area">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    placeholder="Apna sawal likho..." 
+                    onkeypress="if(event.key==='Enter') sendMessage()"
+                >
+                <button onclick="sendMessage()">Bhej</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize
+        const messagesDiv = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const modeSelect = document.getElementById('mode');
+        const loadingDiv = document.getElementById('loading');
+
+        // Store conversation history
+        let conversationHistory = [];
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Add user message to UI
+            addMessageToUI(message, 'user');
+            userInput.value = '';
+
+            // Add to history
+            conversationHistory.push({ role: 'user', content: message });
+
+            // Show loading
+            loadingDiv.style.display = 'block';
+
+            try {
+                // Call backend API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        mode: modeSelect.value,
+                        history: conversationHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const aiMessage = data.response;
+                    addMessageToUI(aiMessage, 'ai');
+                    conversationHistory.push({ role: 'assistant', content: aiMessage });
+                } else {
+                    addMessageToUI('❌ Error: ' + (data.error || 'Kuch galat ho gaya'), 'ai');
+                }
+            } catch (error) {
+                addMessageToUI('❌ Network Error: ' + error.message, 'ai');
+            } finally {
+                loadingDiv.style.display = 'none';
+                userInput.focus();
+            }
+        }
+
+        function addMessageToUI(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = sender === 'user' ? 'message user-message' : 'message ai-message';
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Focus input on load
+        userInput.focus();
+    </script>
+</body>
+</html>
