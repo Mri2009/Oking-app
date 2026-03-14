@@ -2,6 +2,5 @@
   "buildCommand": "echo 'Build complete'",
   "public": true
 }
-    "OPENROUTER_KEY": "@openrouter_key"
+  { "OPENROUTER_KEY": "@openrouter_key"
   }
-}
